@@ -15,8 +15,7 @@ func (t Text) Equals(other Text) bool {
 	return t == other
 }
 
-func initEditorUI() *editorui.EditorUI[Text] {
-	editor := editor.NewEditor[Text]()
+func initEditorUI(editor *editor.Editor[Text]) *editorui.EditorUI[Text] {
 	editorUI := editorui.NewEditorUI(editor)
 	editorUI.AddButton("Reset", controls.NewButton("Reset", command.NewResetCommand[Text](editor)))
 	editorUI.AddButton("Save", controls.NewButton("Save", command.NewSaveCommand[Text](editor)))
@@ -25,7 +24,8 @@ func initEditorUI() *editorui.EditorUI[Text] {
 }
 
 func CommandEditorExample() {
-	editorUI := initEditorUI()
+	editor := editor.NewEditor[Text]()
+	editorUI := initEditorUI(editor)
 
 	editorUI.SetValue("Hello")
 	editorUI.ClickButton("Save")
