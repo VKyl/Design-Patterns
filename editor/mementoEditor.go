@@ -4,6 +4,16 @@ import (
 	"github.com/VKyl/Design-Patterns/util"
 )
 
+type Snapshot[T util.Comperable[T]] struct {
+	value    T
+	font     string
+	fontSize int
+}
+
+func (s Snapshot[T]) IsEqual(other Snapshot[T]) bool {
+	return s.value.Equals(other.value) && s.font == other.font && s.fontSize == other.fontSize
+}
+
 type MementoEditor[T util.Comperable[T]] struct {
 	value    T
 	font     string

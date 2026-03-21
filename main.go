@@ -5,6 +5,7 @@ import (
 
 	"github.com/VKyl/Design-Patterns/command"
 	"github.com/VKyl/Design-Patterns/editor"
+	versioncontrol "github.com/VKyl/Design-Patterns/editor/versionControl"
 	editorui "github.com/VKyl/Design-Patterns/editorUI"
 	"github.com/VKyl/Design-Patterns/editorUI/controls"
 )
@@ -36,7 +37,9 @@ func CommandEditorExample() {
 	editorUI.DisplayValue()
 }
 
-func initEditorUIMemento(editor *editor.VersionControl[Text]) *editorui.EditorUI[Text] {
+func initEditorUIMemento(
+	editor *versioncontrol.VersionControl[Text, editor.Snapshot[Text]],
+) *editorui.EditorUI[Text] {
 	editorUI := editorui.NewEditorUI(editor)
 	editorUI.AddButton("Reset", controls.NewButton("Reset", command.NewResetCommand[Text](editor)))
 	editorUI.AddButton("Save", controls.NewButton("Save", command.NewSaveCommand[Text](editor)))
@@ -47,7 +50,7 @@ func initEditorUIMemento(editor *editor.VersionControl[Text]) *editorui.EditorUI
 
 func VersionControlExample() {
 	e := editor.NewMementoEditor[Text]()
-	vc := editor.NewVersionControl(e)
+	vc := versioncontrol.NewVersionControl(e)
 	editorUI := initEditorUIMemento(vc)
 
 	editorUI.SetValue("Hello")
