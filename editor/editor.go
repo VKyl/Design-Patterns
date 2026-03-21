@@ -1,6 +1,8 @@
 package editor
 
-import "github.com/VKyl/Design-Patterns/util"
+import (
+	"github.com/VKyl/Design-Patterns/util"
+)
 
 type Editor[T util.Comperable[T]] struct {
 	previousValue T

@@ -23,7 +23,7 @@ type EditorUI[T util.Comperable[T]] struct {
 }
 
 func NewEditorUI[T util.Comperable[T]](editor Editor[T]) *EditorUI[T] {
-	return &EditorUI[T]{editor: editor}
+	return &EditorUI[T]{editor: editor, buttons: make(map[string]*controls.Button)}
 }
 
 func (ui *EditorUI[T]) DisplayValue() {

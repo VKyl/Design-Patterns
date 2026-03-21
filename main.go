@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/VKyl/Design-Patterns/command"
-	"github.com/VKyl/Design-Patterns/editorUI/controls"
 	"github.com/VKyl/Design-Patterns/editor"
 	editorui "github.com/VKyl/Design-Patterns/editorUI"
+	"github.com/VKyl/Design-Patterns/editorUI/controls"
 )
 
 type Text string
@@ -15,7 +15,7 @@ func (t Text) Equals(other Text) bool {
 	return t == other
 }
 
-func initEditorUI(editor *editor.Editor[Text]) *editorui.EditorUI[Text] {
+func initEditorUICommand(editor *editor.Editor[Text]) *editorui.EditorUI[Text] {
 	editorUI := editorui.NewEditorUI(editor)
 	editorUI.AddButton("Reset", controls.NewButton("Reset", command.NewResetCommand[Text](editor)))
 	editorUI.AddButton("Save", controls.NewButton("Save", command.NewSaveCommand[Text](editor)))
@@ -25,7 +25,7 @@ func initEditorUI(editor *editor.Editor[Text]) *editorui.EditorUI[Text] {
 
 func CommandEditorExample() {
 	editor := editor.NewEditor[Text]()
-	editorUI := initEditorUI(editor)
+	editorUI := initEditorUICommand(editor)
 
 	editorUI.SetValue("Hello")
 	editorUI.ClickButton("Save")
@@ -36,6 +36,43 @@ func CommandEditorExample() {
 	editorUI.DisplayValue()
 }
 
+func initEditorUIMemento(editor *editor.VersionControl[Text]) *editorui.EditorUI[Text] {
+	editorUI := editorui.NewEditorUI(editor)
+	editorUI.AddButton("Reset", controls.NewButton("Reset", command.NewResetCommand[Text](editor)))
+	editorUI.AddButton("Save", controls.NewButton("Save", command.NewSaveCommand[Text](editor)))
+	editorUI.AddButton("Undo", controls.NewButton("Undo", command.NewUndoCommand[Text](editor)))
+	fmt.Println("Editor UI created with Reset, Save, and Undo buttons")
+	return editorUI
+}
+
+func VersionControlExample() {
+	e := editor.NewMementoEditor[Text]()
+	vc := editor.NewVersionControl(e)
+	editorUI := initEditorUIMemento(vc)
+
+	editorUI.SetValue("Hello")
+	editorUI.ClickButton("Save")
+	editorUI.DisplayValue()
+
+	editorUI.SetValue("Hello, World!")
+	editorUI.DisplayValue()
+
+	editorUI.ClickButton("Reset")
+	editorUI.DisplayValue()
+
+	editorUI.SetValue("Hello Again")
+	editorUI.DisplayValue()
+
+	editorUI.SetValue("Hello again 2")
+	editorUI.DisplayValue()
+
+	editorUI.ClickButton("Undo")
+	editorUI.DisplayValue()
+
+	editorUI.ClickButton("Undo")
+	editorUI.DisplayValue()
+}
+
 func main() {
-	CommandEditorExample()
+	VersionControlExample()
 }
