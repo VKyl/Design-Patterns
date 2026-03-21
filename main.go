@@ -4,10 +4,8 @@ import (
 	"fmt"
 
 	"github.com/VKyl/Design-Patterns/command"
+	"github.com/VKyl/Design-Patterns/controls"
 	"github.com/VKyl/Design-Patterns/editor"
-	versioncontrol "github.com/VKyl/Design-Patterns/editor/versionControl"
-	editorui "github.com/VKyl/Design-Patterns/editorUI"
-	"github.com/VKyl/Design-Patterns/editorUI/controls"
 )
 
 type Text string
@@ -16,64 +14,49 @@ func (t Text) Equals(other Text) bool {
 	return t == other
 }
 
-func initEditorUICommand(editor *editor.Editor[Text]) *editorui.EditorUI[Text] {
-	editorUI := editorui.NewEditorUI(editor)
-	editorUI.AddButton("Reset", controls.NewButton("Reset", command.NewResetCommand[Text](editor)))
-	editorUI.AddButton("Save", controls.NewButton("Save", command.NewSaveCommand[Text](editor)))
-	fmt.Println("Editor UI created with Reset and Save buttons")
-	return editorUI
-}
-
 func CommandEditorExample() {
-	editor := editor.NewEditor[Text]()
-	editorUI := initEditorUICommand(editor)
+	e := editor.NewEditor[Text]()
 
-	editorUI.SetValue("Hello")
-	editorUI.ClickButton("Save")
-	editorUI.DisplayValue()
-	editorUI.SetValue("Hello, World!")
-	editorUI.DisplayValue()
-	editorUI.ClickButton("Reset")
-	editorUI.DisplayValue()
-}
+	resetButton := controls.NewButton("Reset", command.NewResetCommand[Text](e))
+	saveButton := controls.NewButton("Save", command.NewSaveCommand[Text](e))
 
-func initEditorUIMemento(
-	editor *versioncontrol.VersionControl[Text, editor.Snapshot[Text]],
-) *editorui.EditorUI[Text] {
-	editorUI := editorui.NewEditorUI(editor)
-	editorUI.AddButton("Reset", controls.NewButton("Reset", command.NewResetCommand[Text](editor)))
-	editorUI.AddButton("Save", controls.NewButton("Save", command.NewSaveCommand[Text](editor)))
-	editorUI.AddButton("Undo", controls.NewButton("Undo", command.NewUndoCommand[Text](editor)))
-	fmt.Println("Editor UI created with Reset, Save, and Undo buttons")
-	return editorUI
+	e.SetValue("Hello")
+	saveButton.Click()
+	fmt.Printf("Is Edited: %v, Current value: %s\n", e.IsEdited(), e.Value())
+	e.SetValue("Hello, World!")
+	fmt.Printf("Is Edited: %v, Current value: %s\n", e.IsEdited(), e.Value())
+	resetButton.Click()
+	fmt.Printf("Is Edited: %v, Current value: %s\n", e.IsEdited(), e.Value())
 }
 
 func VersionControlExample() {
-	e := editor.NewMementoEditor[Text]()
-	vc := versioncontrol.NewVersionControl(e)
-	editorUI := initEditorUIMemento(vc)
+	vc := editor.NewVersionControlledEditor[Text]()
+	resetButton := controls.NewButton("Reset", command.NewResetCommand[Text](vc))
+	saveButton := controls.NewButton("Save", command.NewSaveCommand[Text](vc))
+	undoButton := controls.NewButton("Undo", command.NewUndoCommand[Text](vc))
 
-	editorUI.SetValue("Hello")
-	editorUI.ClickButton("Save")
-	editorUI.DisplayValue()
+	vc.SetValue("Hello")
+	saveButton.Click()
+	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
 
-	editorUI.SetValue("Hello, World!")
-	editorUI.DisplayValue()
+	vc.SetValue("Hello, World!")
+	saveButton.Click()
+	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
 
-	editorUI.ClickButton("Reset")
-	editorUI.DisplayValue()
+	resetButton.Click()
+	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
 
-	editorUI.SetValue("Hello Again")
-	editorUI.DisplayValue()
+	vc.SetValue("Hello Again")
+	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
 
-	editorUI.SetValue("Hello again 2")
-	editorUI.DisplayValue()
+	vc.SetValue("Hello again 2")
+	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
 
-	editorUI.ClickButton("Undo")
-	editorUI.DisplayValue()
+	undoButton.Click()
+	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
 
-	editorUI.ClickButton("Undo")
-	editorUI.DisplayValue()
+	undoButton.Click()
+	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
 }
 
 func main() {

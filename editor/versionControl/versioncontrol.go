@@ -27,18 +27,12 @@ func NewVersionControl[T util.Comperable[T], Snapshot any](editor Editor[T, Snap
 	}
 }
 
-func (vc *VersionControl[T, Snapshot]) Value() T {
-	return vc.editor.Value()
+func (vc *VersionControl[T, Snapshot]) AddChange(v Snapshot) {
+	vc.changesHistory.AddSnapshot(memento.NewMemento(vc.editor, v))
 }
 
 func (vc *VersionControl[T, Snapshot]) IsEdited() bool {
 	return !vc.changesHistory.IsEmpty()
-}
-
-func (vc *VersionControl[T, Snapshot]) SetValue(value T) {
-	memento := memento.NewMemento(vc.editor, vc.editor.MakeSnapshot())
-	vc.changesHistory.AddSnapshot(memento)
-	vc.editor.SetValue(value)
 }
 
 func (vc *VersionControl[T, Snapshot]) Reset() {
