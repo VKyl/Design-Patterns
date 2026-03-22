@@ -44,8 +44,7 @@ func (vc *VersionControl[T, Snapshot]) Reset() {
 }
 
 func (vc *VersionControl[T, Snapshot]) Save() {
-	state := vc.changesHistory.Peek()
-	if state != nil {
+	if !vc.changesHistory.IsEmpty() {
 		memento := memento.NewMemento(vc.editor, vc.editor.MakeSnapshot())
 		vc.versionHistory.AddSnapshot(memento)
 	}
@@ -53,7 +52,23 @@ func (vc *VersionControl[T, Snapshot]) Save() {
 }
 
 func (vc *VersionControl[T, Snapshot]) Undo() {
+	if vc.changesHistory.IsEmpty() {
+		vc.undoVersion()
+	} else {
+		vc.undoChange()
+	}
+}
+
+func (vc *VersionControl[T, Snapshot]) undoChange() {
 	state := vc.changesHistory.Pop()
+	if state != nil {
+		state.Restore()
+	}
+}
+
+func (vc *VersionControl[T, Snapshot]) undoVersion() {
+	vc.versionHistory.Pop()
+	state := vc.versionHistory.Peek()
 	if state != nil {
 		state.Restore()
 	}

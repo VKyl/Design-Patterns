@@ -14,6 +14,15 @@ func (t Text) Equals(other Text) bool {
 	return t == other
 }
 
+type EditedValue[T any] interface {
+	Value() T
+	IsEdited() bool
+}
+
+func DisplayValue[T any](v EditedValue[T]) {
+	fmt.Printf("Is Edited: %v, Current value: %v\n", v.IsEdited(), v.Value())
+}
+
 func CommandEditorExample() {
 	e := editor.NewEditor[Text]()
 
@@ -22,11 +31,11 @@ func CommandEditorExample() {
 
 	e.SetValue("Hello")
 	saveButton.Click()
-	fmt.Printf("Is Edited: %v, Current value: %s\n", e.IsEdited(), e.Value())
+	DisplayValue(e)
 	e.SetValue("Hello, World!")
-	fmt.Printf("Is Edited: %v, Current value: %s\n", e.IsEdited(), e.Value())
+	DisplayValue(e)
 	resetButton.Click()
-	fmt.Printf("Is Edited: %v, Current value: %s\n", e.IsEdited(), e.Value())
+	DisplayValue(e)
 }
 
 func VersionControlExample() {
@@ -37,26 +46,26 @@ func VersionControlExample() {
 
 	vc.SetValue("Hello")
 	saveButton.Click()
-	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
+	DisplayValue(vc)
 
 	vc.SetValue("Hello, World!")
 	saveButton.Click()
-	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
+	DisplayValue(vc)
 
 	resetButton.Click()
-	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
+	DisplayValue(vc)
 
 	vc.SetValue("Hello Again")
-	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
+	DisplayValue(vc)
 
 	vc.SetValue("Hello again 2")
-	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
+	DisplayValue(vc)
 
 	undoButton.Click()
-	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
+	DisplayValue(vc)
 
 	undoButton.Click()
-	fmt.Printf("Is Edited: %v, Current value: %s\n", vc.IsEdited(), vc.Value())
+	DisplayValue(vc)
 }
 
 func main() {
