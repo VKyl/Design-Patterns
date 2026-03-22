@@ -31,9 +31,9 @@ func CommandEditorExample() {
 
 func VersionControlExample() {
 	vc := editor.NewVersionControlledEditor[Text]()
-	resetButton := controls.NewButton("Reset", command.NewResetCommand[Text](vc))
-	saveButton := controls.NewButton("Save", command.NewSaveCommand[Text](vc))
-	undoButton := controls.NewButton("Undo", command.NewUndoCommand[Text](vc))
+	resetButton := controls.NewButton("Reset", command.NewResetCommand[Text](vc.VersionControl()))
+	saveButton := controls.NewButton("Save", command.NewSaveCommand[Text](vc.VersionControl()))
+	undoButton := controls.NewButton("Undo", command.NewUndoCommand[Text](vc.VersionControl()))
 
 	vc.SetValue("Hello")
 	saveButton.Click()

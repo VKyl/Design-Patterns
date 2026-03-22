@@ -54,16 +54,8 @@ func (vc *VersionControlledEditor[T]) IsEdited() bool {
 	return vc.vc.IsEdited()
 }
 
-func (vc *VersionControlledEditor[T]) Reset() {
-	vc.vc.Reset()
-}
-
-func (vc *VersionControlledEditor[T]) Save() {
-	vc.vc.Save()
-}
-
-func (vc *VersionControlledEditor[T]) Undo() {
-	vc.vc.Undo()
+func (vc *VersionControlledEditor[T]) VersionControl() VersionControll[T] {
+	return vc.vc
 }
 
 func (vc *VersionControlledEditor[T]) saveChange() {
